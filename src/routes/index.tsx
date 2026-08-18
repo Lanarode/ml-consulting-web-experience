@@ -147,7 +147,7 @@ function WorkGallery() {
   const images = [
     { src: '/assets/team-session.jpg', alt: 'Maria leading a hospitality team session' },
     { src: '/assets/operations-work.jpg', alt: 'Hospitality operations work in progress' },
-    { src: '/assets/leadership-training.jpg', alt: 'Maria leading a leadership workshop' },
+    { src: '/assets/opening-consulting.jpg', alt: 'Maria presenting an opening concept to a team' },
   ]
   return <div className="work-gallery" aria-label="Three ways to work with Maria">{services.map((service, index) => <article className="work-card" key={service.title}><img src={images[index].src} alt={images[index].alt} loading="lazy" /><div className="work-card-copy"><span>{String(index + 1).padStart(2, '0')}</span><h3>{service.title}</h3><p>{serviceSummaries[index]}</p></div></article>)}</div>
 }
