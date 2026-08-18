@@ -83,6 +83,12 @@ const services = [
   },
 ]
 
+const serviceSummaries = [
+  'Find where the business is losing money, time and guest loyalty — and leave with a precise action plan.',
+  'Build operational systems that can scale without losing quality, consistency or control.',
+  'Structure the journey from first idea to opening day and prepare the business to perform from day one.',
+]
+
 export const Route = createFileRoute('/')({
   head: () => ({
     meta: [
@@ -138,11 +144,16 @@ function WhyBlock() {
 }
 
 function WorkGallery() {
-  return <div className="work-gallery" aria-label="Maria working with hospitality teams"><img src="/assets/team-session.jpg" alt="Maria leading a hospitality team session" loading="lazy" /><img src="/assets/operations-work.jpg" alt="Hospitality operations work in progress" loading="lazy" /><img src="/assets/leadership-training.jpg" alt="Maria leading a leadership workshop" loading="lazy" /></div>
+  const images = [
+    { src: '/assets/team-session.jpg', alt: 'Maria leading a hospitality team session' },
+    { src: '/assets/operations-work.jpg', alt: 'Hospitality operations work in progress' },
+    { src: '/assets/leadership-training.jpg', alt: 'Maria leading a leadership workshop' },
+  ]
+  return <div className="work-gallery" aria-label="Three ways to work with Maria">{services.map((service, index) => <article className="work-card" key={service.title}><img src={images[index].src} alt={images[index].alt} loading="lazy" /><div className="work-card-copy"><span>{String(index + 1).padStart(2, '0')}</span><h3>{service.title}</h3><p>{serviceSummaries[index]}</p></div></article>)}</div>
 }
 
 function Services() {
-  return <section className="services-section" id="work"><div className="section-heading"><Kicker number="03">Ways to work together</Kicker><h2>Three ways to build a business that works.</h2></div><WorkGallery /><div className="services-list">{services.map((service, index) => <article className="service" key={service.title}><span className="service-number">{String(index + 1).padStart(2, '0')}</span><div className="service-content"><div className="service-lead"><p className="service-context">{service.context}</p><h3>{service.title}</h3></div><div className="service-description">{service.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>{service.capabilities && <ul className="capabilities">{service.capabilities.map((item) => <li key={item}>{item}</li>)}</ul>}{service.closing && <p className="service-closing">{service.closing}</p>}</div></article>)}</div></section>
+  return <section className="services-section" id="work"><div className="services-overview"><div className="section-heading"><Kicker number="03">Ways to work together</Kicker><h2>Three clear ways to work together.</h2></div><WorkGallery /></div><div className="services-list">{services.map((service, index) => <article className="service" key={service.title}><span className="service-number">{String(index + 1).padStart(2, '0')}</span><div className="service-content"><div className="service-lead"><p className="service-context">{service.context}</p><h3>{service.title}</h3></div><div className="service-description">{service.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>{service.capabilities && <ul className="capabilities">{service.capabilities.map((item) => <li key={item}>{item}</li>)}</ul>}{service.closing && <p className="service-closing">{service.closing}</p>}</div></article>)}</div></section>
 }
 
 function About() {
