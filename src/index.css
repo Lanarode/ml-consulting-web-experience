@@ -135,15 +135,15 @@ p, h1, h2, h3 { margin-top: 0; }
 .capabilities li { min-height: 54px; padding: 16px 10px 12px 0; border-bottom: 1px solid var(--line-dark); font: 11px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
 .service-closing { grid-column: 1 / -1; margin: 36px 0 0; font-size: 24px; line-height: 1.35; }
 
-.about-section { min-height: 880px; padding: 72px 5vw 64px; display: grid; grid-template-columns: minmax(420px, 530px) minmax(0, 720px); gap: clamp(72px, 6.5vw, 108px); align-items: stretch; color: var(--powder-blue); background: var(--deep-navy); }
-.about-section > img { width: 100%; height: clamp(620px, 74vh, 730px); object-fit: cover; object-position: center top; }
+.about-section { min-height: calc(100svh - 78px); padding: clamp(32px, 4.5vh, 56px) 5vw; display: grid; grid-template-columns: minmax(420px, 530px) minmax(0, 720px); gap: clamp(72px, 6.5vw, 108px); align-items: start; color: var(--powder-blue); background: var(--deep-navy); scroll-margin-top: 78px; }
+.about-section > img { width: 100%; height: clamp(560px, calc(100svh - 150px), 720px); object-fit: cover; object-position: center top; }
 .about-copy { min-width: 0; max-width: 720px; display: flex; flex-direction: column; }
 .about-copy > .kicker { margin-top: 12px; }
 .about-statement { margin-top: 38px; display: grid; grid-template-columns: 300px minmax(0, 1fr); align-items: end; }
 .about-statement h2 { grid-column: 1 / -1; max-width: 700px; margin: 0; font-size: clamp(38px, 2.8vw, 44px); line-height: 1.04; letter-spacing: -.03em; font-weight: 380; }
 .about-statement .connector { grid-column: 1; width: 290px; margin: -2px 0 0; color: var(--powder-blue); justify-self: start; }
 .about-statement h3 { grid-column: 2; margin: -8px 0 0 16px; font-size: clamp(28px, 2.05vw, 32px); line-height: 1.12; font-weight: 400; }
-.about-body { width: 100%; max-width: 650px; margin-top: auto; display: grid; grid-template-columns: 1fr; gap: 34px; }
+.about-body { width: 100%; max-width: 650px; margin-top: clamp(88px, 13vh, 130px); display: grid; grid-template-columns: 1fr; gap: 26px; }
 .about-body p { margin: 0; font-size: 15px; line-height: 1.55; }
 .about-body p:first-child { display: none; }
 
