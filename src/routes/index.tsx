@@ -1,31 +1,192 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useEffect, useRef, useState, type RefObject } from 'react'
-import { ArrowUpRight, ChevronRight, Link as LinkIcon, Mail, Phone, X } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 
 const BOOKING_URL = 'TEMPORARY_CALENDLY_URL'
 const EMAIL = 'Lukashenkomaria91@gmail.com'
 const LINKEDIN = 'https://www.linkedin.com/in/maria-lukashenko-615a71231/'
-const WHATSAPP = 'https://wa.me/9715257733361'
-const sections = ['Home', 'What I Help With', 'Ways to Work Together', 'About', 'Contact']
-const impact = ['30+ hospitality projects', '30 venues launched & scaled (17 cyber cafés, 9 cafés, 4 restaurants)', '16+ years in hospitality', '150+ team members led simultaneously', '250+ professionals trained, including 30+ managers', 'Service systems developed for 20+ hospitality concepts', 'Operations across 6 countries (UAE, Russia, Seychelles, Monaco, Morocco, Saudi Arabia)', 'Revenue growth of up to 35%', 'Labor costs reduced by up to 30% during low-demand periods', 'Food cost and operating expenses optimized while maintaining guest experience', '90%+ client retention and repeat collaborations', 'Proven track record of launching hospitality businesses from the ground up']
-const clients = ["Angel's Cake", 'True Gamers', 'Nobu', 'Café de Palma', 'TODA', 'Zoloto', '15 Kitchen + Bar', 'Peqlo BBQ']
+const WHATSAPP = 'https://wa.me/971525773361'
 
-export const Route = createFileRoute('/')({ head: () => ({ meta: [{ title: 'ML Consulting — Hospitality Operations Consultancy' }, { name: 'description', content: 'International hospitality operations consultancy led by Maria Lukashenko.' }] }), component: Home })
+const trustedBrands = [
+  { name: 'Angel Cakes', logo: '/logos/angel-cakes.png', url: 'https://www.angelcakes.world/' },
+  { name: 'Nobu', logo: '/logos/nobu.svg', url: 'https://www.noburestaurants.com/' },
+  { name: 'Café de Palma', logo: '/logos/cafe-de-palma.svg', url: 'https://cafedepalma.ae/' },
+  { name: 'Zoloto', logo: '/logos/zoloto.png', url: 'https://www.instagram.com/zoloto.dxb/' },
+  { name: 'True Gamers', logo: '/logos/true-gamers.png', url: 'https://truegamers.world/' },
+  { name: 'TODA', logo: '/logos/toda.png', url: 'https://toda.ae/' },
+]
 
-function Home() {
-  const [active, setActive] = useState(0)
-  const [bookingOpen, setBookingOpen] = useState(false)
-  const closeButton = useRef<HTMLButtonElement>(null)
-  useEffect(() => { if (!bookingOpen) return; document.body.style.overflow = 'hidden'; closeButton.current?.focus(); const onKey = (event: KeyboardEvent) => event.key === 'Escape' && setBookingOpen(false); window.addEventListener('keydown', onKey); return () => { document.body.style.overflow = ''; window.removeEventListener('keydown', onKey) } }, [bookingOpen])
-  return <main className="min-h-dvh bg-background text-foreground"><div className="accordion-shell">{sections.map((label, index) => <section key={label} className={`accordion-section ${active === index ? 'is-active' : ''} ${index === 4 ? 'contact-section' : ''}`}><button className="section-rail" onClick={() => setActive(index)} aria-expanded={active === index} aria-controls={`panel-${index}`}><span className="rail-number">0{index + 1}</span><span className="rail-label">{label}</span><span className="rail-mark">{active === index ? '×' : '+'}</span></button><div id={`panel-${index}`} className="section-panel" aria-hidden={active !== index}><div className="panel-scroll">{index === 0 && <HomePanel onBook={() => setBookingOpen(true)} />}{index === 1 && <HelpPanel />}{index === 2 && <WorkPanel />}{index === 3 && <AboutPanel />}{index === 4 && <ContactPanel onBook={() => setBookingOpen(true)} />}</div></div></section>)}</div><button className="mobile-booking" onClick={() => setBookingOpen(true)}>Work with me <ArrowUpRight size={16} /></button>{bookingOpen && <BookingModal closeButton={closeButton} onClose={() => setBookingOpen(false)} />}</main>
+const metrics = [
+  ['30+', 'Hospitality Projects'],
+  ['30', 'Venues Launched & Scaled'],
+  ['16+', 'Years of Experience'],
+  ['250+', 'Professionals Trained'],
+  ['35%', 'Revenue Growth'],
+]
+
+const impactFacts = [
+  '30+ hospitality projects',
+  '30 venues launched & scaled (17 cyber cafés, 9 cafés, 4 restaurants)',
+  '16+ years in hospitality',
+  '150+ team members led simultaneously',
+  '250+ professionals trained, including 30+ managers',
+  'Service systems developed for 20+ hospitality concepts',
+  'Operations across 6 countries (UAE, Russia, Seychelles, Monaco, Morocco, Saudi Arabia)',
+  'Revenue growth of up to 35%',
+  'Labor costs reduced by up to 30% during low-demand periods',
+  'Food cost and operating expenses optimized while maintaining guest experience',
+  '90%+ client retention and repeat collaborations',
+  'Proven track record of launching hospitality businesses from the ground up',
+]
+
+const helpAreas = [
+  'Opening new hospitality concepts',
+  'Scaling growing businesses',
+  'Operational transformation',
+  'Leadership & service culture',
+]
+
+const services = [
+  {
+    title: 'Operational Audit',
+    context: "Your business isn't performing the way it should.",
+    paragraphs: [
+      `If your guests are complaining, profits are shrinking, your managers are overwhelmed or something simply feels "off", we'll find out why.`,
+      'I spend several days “inside” your business, studying every stage of the guest journey, service standards, team performance, management, menu efficiency and commercial operations.',
+      "You receive a detailed action plan showing exactly where you're losing money, time and guest loyalty and what to do next.",
+      "Perfect for businesses that know something isn't working but don't yet know why.",
+    ],
+  },
+  {
+    title: 'Operations Transformation',
+    context: "You want to grow, but your business isn't ready.",
+    paragraphs: [
+      "One successful venue doesn't automatically become ten.",
+      'Most businesses discover too late that nothing is documented, nobody works the same way, and every new opening starts from zero.',
+      'I help founders build operational systems that can actually scale.',
+    ],
+    capabilities: [
+      'Pre-opening Strategy', 'Operational Systems', 'Service Excellence',
+      'SOP Development', 'Leadership Training', 'Team Performance',
+      'Guest Experience', 'KPIs & Reporting', 'Financial Performance',
+      'Multi-unit Operations', 'Scaling Hospitality Businesses',
+    ],
+    closing: 'Everything your business needs to grow without losing quality.',
+  },
+  {
+    title: 'Opening Consulting',
+    context: "You're building something new.",
+    paragraphs: [
+      'From the first idea to opening day.',
+      'I work alongside founders throughout the entire launch process, helping structure operations, recruit teams, build service systems, coordinate suppliers and prepare the business for opening.',
+      "From choosing the first napkin to welcoming the first guest, whether you're opening a restaurant, members' club, café, hotel, entertainment venue, or another hospitality concept, I help ensure your business feels organised, premium, and commercially ready from day one.",
+    ],
+  },
+]
+
+export const Route = createFileRoute('/')({
+  head: () => ({
+    meta: [
+      { title: 'ML Consulting — Hospitality Operations Consultancy' },
+      { name: 'description', content: 'International hospitality operations consultancy led by Maria Lukashenko.' },
+    ],
+  }),
+  component: HomePage,
+})
+
+function Kicker({ number, children }: { number?: string; children: ReactNode }) {
+  return <p className="kicker">{number && <><span>{number}</span> / </>}{children}</p>
 }
 
-function HomePanel({ onBook }: { onBook: () => void }) { return <div className="home-panel"><header className="panel-header"><img src="/assets/mask-group.png" alt="ML Consulting logo" className="full-logo" /><span className="eyebrow">International hospitality operations</span></header><div className="hero-copy"><p className="kicker">A practical approach to exceptional hospitality</p><h1>I build profitable<br />guest experience<br /><em>systems.</em></h1><p className="hero-support">I help founders turn ambitious hospitality concepts into businesses that actually work.<br /><br />Whether you're opening your first venue, scaling to multiple locations, or trying to fix a business that's stopped performing, I help turn operational chaos into profitable, repeatable systems.<br /><br />Because a great guest experience is never accidental!</p><button className="text-cta" onClick={onBook}>Work with me <ArrowUpRight size={17} /></button></div><div className="trusted"><span>Trusted by</span><div>{clients.map((client) => <span key={client}>{client}</span>)}</div></div><div className="impact-head"><span>Impact, in practice</span><span>01—05</span></div><div className="metrics">{[['30+', 'Hospitality Projects'], ['30', 'Venues Launched & Scaled'], ['16+', 'Years of Experience'], ['250+', 'Professionals Trained'], ['35%', 'Revenue Growth']].map(([number, label], index) => <div className="metric" key={label}>{index === 4 && <small>UP TO</small>}<strong>{number}</strong><span>{label}</span></div>)}</div><div className="full-impact"><span className="eyebrow">Full impact</span><ImpactConstellation /></div></div> }
-function HelpPanel() { return <div className="content-panel"><PanelIntro number="02" title="What I Help With" /><div className="editorial-list help-constellation">{['Opening new hospitality concepts', 'Scaling growing businesses', 'Operational transformation', 'Leadership & service culture'].map((item, index) => <div key={item}><span>0{index + 1}</span><h2>{item}</h2></div>)}</div><div className="why"><span className="eyebrow">Why founders call me?</span><h2>Most businesses don't have a service problem.<br /><em>They have a systems problem.</em></h2><div className="why-constellation"><p>Managers spend every day putting out fires. Every new location feels like starting from scratch.</p><p>Service depends on individuals rather than clear standards. Teams work hard, but results stay inconsistent. Familiar?</p></div><p>I help founders understand why this happens and build systems that keep the business performing without constant firefighting.</p></div></div> }
-function WorkPanel() { const services = [{ title: 'Operational Audit', context: "Your business isn't performing the way it should.", copy: `If your guests are complaining, profits are shrinking, your managers are overwhelmed or something simply feels "off", we'll find out why.\n\nI spend several days “inside” your business, studying every stage of the guest journey, service standards, team performance, management, menu efficiency and commercial operations.\n\nYou receive a detailed action plan showing exactly where you're losing money, time and guest loyalty and what to do next.\n\nPerfect for businesses that know something isn't working but don't yet know why.` }, { title: 'Operations Transformation', context: "You want to grow, but your business isn't ready.", copy: `One successful venue doesn't automatically become ten.\n\nMost businesses discover too late that nothing is documented, nobody works the same way, and every new opening starts from zero.\n\nI help founders build operational systems that can actually scale.` }, { title: 'Opening Consulting', context: "You're building something new.", copy: `From the first idea to opening day.\n\nI work alongside founders throughout the entire launch process, helping structure operations, recruit teams, build service systems, coordinate suppliers and prepare the business for opening.\n\nFrom choosing the first napkin to welcoming the first guest, whether you're opening a restaurant, members' club, café, hotel, entertainment venue, or another hospitality concept, I help ensure your business feels organised, premium, and commercially ready from day one.` }]; const capabilities = [['Pre-opening Strategy', 'Operational Systems', 'Service Excellence'], ['SOP Development', 'Leadership Training', 'Team Performance'], ['Guest Experience', 'KPIs & Reporting', 'Financial Performance', 'Multi-unit Operations', 'Scaling Hospitality Businesses']]; return <div className="content-panel"><PanelIntro number="03" title="Ways to work together" />{services.map((service, index) => <article className="service" key={service.title}><div className="service-number">0{index + 1}</div><div><p className="context">{service.context}</p><h2>{service.title}</h2><div className="service-copy">{service.copy.split('\n\n').map((line) => <p key={line}>{line}</p>)}</div>{index === 1 && <><div className="capability-index capability-constellation">{capabilities.map((group, groupIndex) => <div className="capability-group" key={groupIndex}>{group.map((item) => <span key={item}>{item}</span>)}</div>)}</div><p className="closing-line">Everything your business needs to grow without losing quality.</p></>}</div></article>)}</div> }
-function AboutPanel() { return <div className="content-panel about-panel"><PanelIntro number="04" title="About me" /><div className="about-grid"><img src="/assets/m-032.jpg" alt="Portrait of Maria Lukashenko" loading="lazy" /><div><p>Most founders don't need another consultant. They need someone they can trust when the stakes are high. Someone who has opened venues, built teams, solved operational challenges and knows what it takes to create a business that works long after opening day. That's where I come in.</p><p>I'm Maria Lukashenko, a hospitality and operations consultant with 16+ years of experience across Europe, the UAE, Russia, and the Seychelles. From luxury hospitality to scaling fast-growing, multi-location brands, I've spent my career building the systems that drive exceptional guest experiences.</p><p>Today, I help founders and operators launch ambitious concepts, fix underperforming businesses and prepare them for sustainable growth through practical operations, strong leadership and service that lasts.</p></div></div></div> }
-function ContactPanel({ onBook }: { onBook: () => void }) { return <div className="contact-panel"><img src="/assets/mask-group.png" alt="ML Consulting logo" className="full-logo" /><span className="eyebrow">05 / Contact</span><h2>Let's build a business people come back to!</h2><p>Whether you're opening your first project, preparing for expansion or trying to understand why your business has stopped growing, I'd love to hear about it.</p><button className="text-cta" onClick={onBook}>Work with me <ArrowUpRight size={17} /></button><div className="contact-links"><a href={`mailto:${EMAIL}`}><Mail size={17} />{EMAIL}</a><a href={LINKEDIN} target="_blank" rel="noreferrer"><LinkIcon size={17} />LinkedIn</a><a href={WHATSAPP} target="_blank" rel="noreferrer"><Phone size={17} />+971 52 577 33 61</a></div><div className="contact-footer"><span>Based internationally</span><img src="/assets/group-37.png" alt="ML Consulting star symbol" /></div></div> }
-function PanelIntro({ number, title }: { number: string, title: string }) { return <div className="panel-intro"><span className="panel-number">{number}</span><h1>{title}</h1><div className="intro-line" /></div> }
-function BookingModal({ closeButton, onClose }: { closeButton: RefObject<HTMLButtonElement | null>, onClose: () => void }) { return <div className="modal-backdrop" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && onClose()}><div className="booking-modal" role="dialog" aria-modal="true" aria-labelledby="booking-title"><div className="modal-head"><div><span className="eyebrow">Discovery Call with Maria</span><h2 id="booking-title">Plan a conversation</h2></div><button ref={closeButton} className="icon-button" onClick={onClose} aria-label="Close booking dialog"><X size={20} /></button></div><div className="booking-frame"><p>Calendly booking experience</p><span>The booking link is ready to be connected.</span><a href={BOOKING_URL} target="_blank" rel="noreferrer" className="text-cta">Open booking externally <ArrowUpRight size={17} /></a></div><p className="modal-note">30 minutes · Google Meet or Zoom</p></div></div> }
+function Connector({ className = '' }: { className?: string }) {
+  return <svg className={`connector ${className}`} viewBox="0 0 164 56" aria-hidden="true"><path d="M2 17H88L122 45" /><circle cx="88" cy="17" r="2.8" /><path className="star" d="M122 35l2.7 7.3 7.3 2.7-7.3 2.7-2.7 7.3-2.7-7.3-7.3-2.7 7.3-2.7z" /></svg>
+}
 
-function ImpactConstellation() { const groups = [impact.slice(0, 3), impact.slice(3, 6), impact.slice(6, 9), impact.slice(9)]; return <div className="impact-constellation">{groups.map((group, groupIndex) => <div className="constellation-group" key={groupIndex}>{group.map((item) => <p className="constellation-item" key={item}>{item}</p>)}</div>)}</div> }
+function BookingModal({ onClose }: { onClose: () => void }) {
+  const closeRef = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    const previous = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    closeRef.current?.focus()
+    const onKey = (event: KeyboardEvent) => event.key === 'Escape' && onClose()
+    window.addEventListener('keydown', onKey)
+    return () => { document.body.style.overflow = previous; window.removeEventListener('keydown', onKey) }
+  }, [onClose])
+
+  const hasCalendly = BOOKING_URL.startsWith('http')
+  return <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+    <div className="booking-modal" role="dialog" aria-modal="true" aria-labelledby="booking-title">
+      <div className="modal-head"><div><Kicker number="30 MIN">Discovery call</Kicker><h2 id="booking-title">Plan a conversation</h2></div><button ref={closeRef} onClick={onClose} aria-label="Close booking dialog">×</button></div>
+      {hasCalendly ? <iframe className="calendly-frame" src={BOOKING_URL} title="Book a discovery call with Maria" /> : <div className="booking-placeholder"><p>The Calendly booking link is ready to be connected.</p><a className="button button-light" href={`mailto:${EMAIL}?subject=Discovery call`}>Book by email</a></div>}
+    </div>
+  </div>
+}
+
+function TrustedBy() {
+  return <section className="trusted-block" aria-label="Trusted by"><Kicker>Trusted by</Kicker><div className="trusted-logos">{trustedBrands.map((brand) => <a href={brand.url} key={brand.name} target="_blank" rel="noreferrer" aria-label={brand.name}><img src={brand.logo} alt={brand.name} /></a>)}</div></section>
+}
+
+function Impact() {
+  return <section className="impact-section" id="impact"><div className="section-heading"><Kicker number="01">Impact</Kicker><h2>Impact, in practice.</h2></div><div className="metrics-grid">{metrics.map(([value, label], index) => <div className="metric" key={label}>{index === 4 && <small>UP TO</small>}<strong>{value}</strong><span>{label}</span></div>)}</div><div className="impact-list"><Kicker>Full impact</Kicker><ol>{impactFacts.map((fact, index) => <li key={fact}><span>{String(index + 1).padStart(2, '0')}</span>{fact}</li>)}</ol></div></section>
+}
+
+function HelpList() {
+  return <div className="help-list">{helpAreas.map((area, index) => <div key={area}><span>{String(index + 1).padStart(2, '0')}</span><p>{area}</p></div>)}</div>
+}
+
+function WhyBlock() {
+  return <section className="why-block"><img src="/assets/m-045.jpg" alt="Maria Lukashenko working at a laptop" /><div className="why-copy"><Kicker>Why founders call me?</Kicker><h2 className="data-headline">MOST BUSINESSES DON'T HAVE A SERVICE PROBLEM.<br /><em>THEY HAVE A SYSTEMS PROBLEM.</em></h2><Connector /><div className="why-body"><p>Managers spend every day putting out fires. Every new location feels like starting from scratch.</p><p>Service depends on individuals rather than clear standards. Teams work hard, but results stay inconsistent. Familiar?</p><p>I help founders understand why this happens and build systems that keep the business performing without constant firefighting.</p></div></div></section>
+}
+
+function WorkGallery() {
+  return <div className="work-gallery" aria-label="Maria working with hospitality teams"><img src="/assets/team-session.jpg" alt="Maria leading a hospitality team session" loading="lazy" /><img src="/assets/operations-work.jpg" alt="Hospitality operations work in progress" loading="lazy" /><img src="/assets/leadership-training.jpg" alt="Maria leading a leadership workshop" loading="lazy" /></div>
+}
+
+function Services() {
+  return <section className="services-section" id="work"><div className="section-heading"><Kicker number="03">Ways to work together</Kicker><h2>Three ways to build a business that works.</h2></div><WorkGallery /><div className="services-list">{services.map((service, index) => <article className="service" key={service.title}><span className="service-number">{String(index + 1).padStart(2, '0')}</span><div className="service-content"><p className="service-context">{service.context}</p><h3>{service.title}</h3>{service.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{service.capabilities && <ul className="capabilities">{service.capabilities.map((item) => <li key={item}>{item}</li>)}</ul>}{service.closing && <p className="service-closing">{service.closing}</p>}</div></article>)}</div></section>
+}
+
+function About() {
+  return <section className="about-section" id="about"><img src="/assets/m-032.jpg" alt="Portrait of Maria Lukashenko" /><div className="about-copy"><Kicker number="04">About Maria</Kicker><div className="about-statement"><h2>Most founders don't need another consultant.</h2><Connector /><h3>They need someone they can trust when the stakes are high.</h3></div><div className="about-body"><p>Most founders don't need another consultant. They need someone they can trust when the stakes are high. Someone who has opened venues, built teams, solved operational challenges and knows what it takes to create a business that works long after opening day. That's where I come in.</p><p>I'm Maria Lukashenko, a hospitality and operations consultant with 16+ years of experience across Europe, the UAE, Russia, and the Seychelles. From luxury hospitality to scaling fast-growing, multi-location brands, I've spent my career building the systems that drive exceptional guest experiences.</p><p>Today, I help founders and operators launch ambitious concepts, fix underperforming businesses and prepare them for sustainable growth through practical operations, strong leadership and service that lasts.</p></div></div></section>
+}
+
+function Contact({ onBook }: { onBook: () => void }) {
+  return <section className="contact-section" id="contact"><div className="contact-main"><Kicker number="05">Contact</Kicker><h2>Let's build a business people come back to!</h2><p>Whether you're opening your first project, preparing for expansion or trying to understand why your business has stopped growing, I'd love to hear about it.</p></div><div className="contact-action"><div className="contact-links"><a href={`mailto:${EMAIL}`}>Email</a><a href={LINKEDIN} target="_blank" rel="noreferrer">View profile</a><a href={WHATSAPP} target="_blank" rel="noreferrer">WhatsApp</a></div><button className="button button-dark" onClick={onBook}>Work with me</button></div></section>
+}
+
+function DesktopSite({ onBook }: { onBook: () => void }) {
+  return <div className="desktop-site"><header className="desktop-nav"><img src="/assets/mlc-logo.png" alt="ML Consulting" /><nav><a href="#impact">Impact</a><a href="#help">What I help with</a><a href="#work">Ways to work together</a><a href="#about">About</a><a href="#contact">Contact</a></nav></header><main><section className="hero-section" id="home"><Kicker>International hospitality operations</Kicker><h1>I build profitable<br />guest experience<br />systems.</h1><div className="hero-bottom"><div className="hero-intro"><Kicker>A practical approach to exceptional hospitality</Kicker><p>I help founders turn ambitious hospitality concepts into businesses that actually work.</p><button className="button button-light" onClick={onBook}>Work with me</button></div><Connector /><div className="hero-detail"><p>Whether you're opening your first venue, scaling to multiple locations, or trying to fix a business that's stopped performing, I help turn operational chaos into profitable, repeatable systems.</p><small>Because a great guest experience is never accidental!</small></div></div></section><TrustedBy /><Impact /><section className="help-section" id="help"><div className="section-heading"><Kicker number="02">What I Help With</Kicker><h2>Built around the real problem.</h2></div><HelpList /></section><WhyBlock /><Services /><About /><Contact onBook={onBook} /></main></div>
+}
+
+type MobileSectionKey = 'home' | 'help' | 'work' | 'about' | 'contact'
+const mobileSections: { key: MobileSectionKey; number: string; label: string }[] = [
+  { key: 'home', number: '01', label: 'Home' },
+  { key: 'help', number: '02', label: 'What I Help With' },
+  { key: 'work', number: '03', label: 'Ways to Work Together' },
+  { key: 'about', number: '04', label: 'About' },
+  { key: 'contact', number: '05', label: 'Contact' },
+]
+
+function MobileHome({ onBook }: { onBook: () => void }) {
+  return <><section className="mobile-hero"><img src="/assets/mlc-logo.png" alt="ML Consulting" /><Kicker>International hospitality operations</Kicker><h1>I build profitable guest experience systems.</h1><Kicker>A practical approach to exceptional hospitality</Kicker><p className="lead">I help founders turn ambitious hospitality concepts into businesses that actually work.</p><Connector /><p>Whether you're opening your first venue, scaling to multiple locations, or trying to fix a business that's stopped performing, I help turn operational chaos into profitable, repeatable systems.</p><small>Because a great guest experience is never accidental!</small><button className="button button-light" onClick={onBook}>Work with me</button></section><TrustedBy /><Impact /></>
+}
+
+function MobileHelp() {
+  return <><section className="mobile-help"><h2>Built around the real problem.</h2><HelpList /></section><WhyBlock /></>
+}
+
+function MobileAccordion({ onBook }: { onBook: () => void }) {
+  const [open, setOpen] = useState<MobileSectionKey>('home')
+  const openSection = (key: MobileSectionKey, button: HTMLButtonElement) => {
+    if (key === open) return
+    const before = button.getBoundingClientRect().top
+    setOpen(key)
+    requestAnimationFrame(() => window.scrollBy({ top: button.getBoundingClientRect().top - before, behavior: 'auto' }))
+  }
+  return <div className="mobile-site">{mobileSections.map((section) => <section className={`accordion-item ${open === section.key ? 'is-open' : ''}`} key={section.key}><button className="accordion-trigger" aria-expanded={open === section.key} aria-controls={`mobile-panel-${section.key}`} onClick={(event) => openSection(section.key, event.currentTarget)}><span className="accordion-number">{section.number}</span><span>{section.label}</span><span className="accordion-mark">{open === section.key ? '−' : '+'}</span></button><div id={`mobile-panel-${section.key}`} className="accordion-panel" hidden={open !== section.key}>{section.key === 'home' && <MobileHome onBook={onBook} />}{section.key === 'help' && <MobileHelp />}{section.key === 'work' && <Services />}{section.key === 'about' && <About />}{section.key === 'contact' && <Contact onBook={onBook} />}</div></section>)}<button className="mobile-cta" onClick={onBook}>Work with me</button></div>
+}
+
+function HomePage() {
+  const [bookingOpen, setBookingOpen] = useState(false)
+  const closeBooking = useCallback(() => setBookingOpen(false), [])
+  return <main className="ml-site"><DesktopSite onBook={() => setBookingOpen(true)} /><MobileAccordion onBook={() => setBookingOpen(true)} />{bookingOpen && <BookingModal onClose={closeBooking} />}</main>
+}
